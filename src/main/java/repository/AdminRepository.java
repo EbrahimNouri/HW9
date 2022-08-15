@@ -1,15 +1,14 @@
 package repository;
 
-import entity.Admin;
 import entity.Drug;
-import entity.Peron;
+import entity.Person;
 import entity.Prescription;
 
 import java.sql.SQLException;
 import java.util.List;
 
 public interface AdminRepository {
-    List<Prescription> addPrescription(Peron peron);
+    List<Prescription> addPrescription(Person person);
     boolean confirmed(Prescription prescription);
     boolean doesExist(Drug drug);
     boolean addDrug(Drug drug);

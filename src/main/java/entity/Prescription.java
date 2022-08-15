@@ -4,25 +4,37 @@ import java.util.List;
 import java.util.Objects;
 
 public class Prescription {
-    private Peron peron;
+    private long id;
+    private Person person;
     private List<Drug> drugs;
+    private String date;
     private boolean confirmation;
 
     public Prescription() {
     }
 
-    public Prescription(Peron peron, List<Drug> drugs, boolean confirmation) {
-        this.peron = peron;
+    public Prescription(long id, Person person, List<Drug> drugs, String date, boolean confirmation) {
+        this.id = id;
+        this.person = person;
         this.drugs = drugs;
+        this.date = date;
         this.confirmation = confirmation;
     }
 
-    public Peron getPeron() {
-        return peron;
+    public long getId() {
+        return id;
     }
 
-    public void setPeron(Peron peron) {
-        this.peron = peron;
+    public void setId(long id) {
+        this.id = id;
+    }
+
+    public Person getPeron() {
+        return person;
+    }
+
+    public void setPeron(Person person) {
+        this.person = person;
     }
 
     public List<Drug> getDrugs() {
@@ -31,6 +43,14 @@ public class Prescription {
 
     public void setDrugs(List<Drug> drugs) {
         this.drugs = drugs;
+    }
+
+    public String getDate() {
+        return date;
+    }
+
+    public void setDate(String date) {
+        this.date = date;
     }
 
     public boolean isConfirmation() {
@@ -46,19 +66,21 @@ public class Prescription {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         Prescription that = (Prescription) o;
-        return confirmation == that.confirmation && Objects.equals(peron, that.peron) && Objects.equals(drugs, that.drugs);
+        return id == that.id && confirmation == that.confirmation && Objects.equals(person, that.person) && Objects.equals(drugs, that.drugs) && Objects.equals(date, that.date);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(peron, drugs, confirmation);
+        return Objects.hash(id, person, drugs, date, confirmation);
     }
 
     @Override
     public String toString() {
         return "Prescription{" +
-                "peron=" + peron +
+                "id=" + id +
+                ", person=" + person +
                 ", drugs=" + drugs +
+                ", date='" + date + '\'' +
                 ", confirmation=" + confirmation +
                 '}';
     }

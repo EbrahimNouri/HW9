@@ -1,6 +1,7 @@
 package repository.impl;
 
 import entity.Patient;
+import entity.Prescription;
 import entity.UserType;
 import repository.BaseRepository;
 import repository.PatientRepository;
@@ -9,18 +10,18 @@ import service.ApplicationConstant;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.util.List;
 
 public class PatientRepositoryImpl implements PatientRepository, BaseRepository<Patient> {
 
     @Override
     public Patient Create(Patient patient) throws SQLException {
-        String sql = "insert into person(name, username, password, user_type, prescriptions)values (?,?,?,?,?)";
+        String sql = "insert into person(name, username, password, user_type)values (?,?,?,?)";
         PreparedStatement ps = ApplicationConstant.getConnection().prepareStatement(sql);
-        ps.setLong(1, patient.getId());
-        ps.setString(2, patient.getName());
-        ps.setString(3, patient.getUsername());
-        ps.setString(4, patient.getPassword());
-        ps.setString(5, patient.getUserType().toString());
+        ps.setString(1, patient.getName());
+        ps.setString(2, patient.getUsername());
+        ps.setString(3, patient.getPassword());
+        ps.setString(4, patient.getUserType().toString());
         ps.executeUpdate();
         return patient;
     }

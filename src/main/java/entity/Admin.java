@@ -3,17 +3,18 @@ package entity;
 import java.util.List;
 import java.util.Objects;
 
-public class Admin extends Peron{
+public class Admin extends Person {
     private List<Prescription> prescriptions;
 
-    public Admin(String name, String username, String password, UserType userType, List<Prescription> prescriptions) {
-        super(name, username, password, userType);
+    public Admin(long id, String name, String username, String password, UserType userType, List<Prescription> prescriptions) {
+        super(id, name, username, password, userType);
         this.prescriptions = prescriptions;
     }
 
-    public Admin(List<Prescription> prescriptions) {
-        this.prescriptions = prescriptions;
+    public Admin() {
+        super();
     }
+
 
     public List<Prescription> getPrescriptions() {
         return prescriptions;

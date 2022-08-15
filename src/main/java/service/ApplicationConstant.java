@@ -1,21 +1,8 @@
 package service;
 
-import entity.Drug;
-import entity.Patient;
-import entity.Peron;
-import entity.Prescription;
-import repository.AdminRepository;
-import repository.DrugRepository;
-import repository.PatientRepository;
-import repository.PrescriptionRepository;
-import repository.impl.AdminRepositoryImpl;
-import repository.impl.DrugRepositoryImpl;
-import repository.impl.PatientRepositoryImpl;
-import repository.impl.PrescriptionRepositoryImpl;
+import repository.impl.*;
 
 import java.sql.Connection;
-import java.sql.SQLException;
-import java.util.List;
 
 public class ApplicationConstant {
     private static Connection connection = new DatabaseHelper().connect();
@@ -41,11 +28,16 @@ public class ApplicationConstant {
     private static PrescriptionRepositoryImpl prescriptionRepositoryImpl = new PrescriptionRepositoryImpl();
 
     public static PrescriptionRepositoryImpl getPrescriptionRepository() {
-        return prescriptionRepository;
+        return prescriptionRepositoryImpl;
     }
     private static PatientRepositoryImpl patientRepository = new PatientRepositoryImpl();
 
     public static PatientRepositoryImpl getPatientRepository() {
         return patientRepository;
+    }
+    private static PersonRepositoryImpl personRepository= new PersonRepositoryImpl();
+
+    public static PersonRepositoryImpl getPersonRepository() {
+        return personRepository;
     }
 }

@@ -56,4 +56,20 @@ public class DrugRepositoryImpl implements DrugRepository, BaseRepository<Drug> 
         PreparedStatement ps = ApplicationConstant.getConnection().prepareStatement(query);
         ps.executeUpdate();
     }
+
+    @Override
+    public Drug findById(long id) throws SQLException {
+        Drug drug = null;
+        String sql = "select * from drug where id = ?";
+        PreparedStatement ps = ApplicationConstant.getConnection().prepareStatement(sql);
+        ps.setLong(1, id);
+        ResultSet rs = ps.executeQuery();
+        if (rs.next()){
+            drug.setId(rs.getLong(1));
+            drug.setName(rs.getString(2));
+            drug.setPrice(rs.getDouble(3));
+        }
+
+        return drug;
+    }
 }

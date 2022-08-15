@@ -2,13 +2,17 @@ package entity;
 
 import java.util.Objects;
 
-public class Patient extends Peron{
+public class Patient extends Person {
     private Prescription prescription;
 
 
     public Patient(long id, String name, String username, String password, UserType userType, Prescription prescription) {
         super(id, name, username, password, userType);
         this.prescription = prescription;
+    }
+
+    public Patient() {
+        super();
     }
 
     public Prescription getPrescription() {
