@@ -3,6 +3,7 @@ package service;
 import repository.impl.*;
 
 import java.sql.Connection;
+import java.util.Scanner;
 
 public class ApplicationConstant {
     private static Connection connection = new DatabaseHelper().connect();
@@ -39,5 +40,15 @@ public class ApplicationConstant {
 
     public static PersonRepositoryImpl getPersonRepository() {
         return personRepository;
+    }
+    private static Printer printer = new Printer();
+
+    public static Printer getPrinter() {
+        return printer;
+    }
+    public static Scanner scanner = new Scanner(System.in);
+
+    public static String  getInput() {
+        return scanner.next();
     }
 }

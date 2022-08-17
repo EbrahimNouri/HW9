@@ -9,8 +9,8 @@ import java.util.List;
 
 public interface AdminRepository {
     List<Prescription> addPrescription(Person person);
-    boolean confirmed(Prescription prescription);
-    boolean doesExist(Drug drug);
-    boolean addDrug(Drug drug);
+    boolean confirmed(Prescription prescription) throws SQLException;
+
+
     void creatTable() throws SQLException;
 }

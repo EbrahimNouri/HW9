@@ -2,6 +2,7 @@ package repository.impl;
 
 import entity.Drug;
 import entity.Patient;
+import entity.Person;
 import entity.Prescription;
 import repository.BaseRepository;
 import repository.PrescriptionRepository;
@@ -13,34 +14,23 @@ import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 
-public class PrescriptionRepositoryImpl implements PrescriptionRepository, BaseRepository<Patient> {
+public class PrescriptionRepositoryImpl implements PrescriptionRepository {
 
     @Override
-    public Patient Create(Patient patient) {
-
-        return null;
+    public void prescriptionsCreate(Prescription prescription) throws SQLException {
+        List<Prescription> prescriptions = new ArrayList<>();
+        for (int i = 0; i < prescriptions.size(); i++) {
+            String sql = "insert into prescription(id, drug_id, person_id, date, confirmation) values (?,?,?,to_date(?,'yyyy/mm/dd'),?)";
+            PreparedStatement ps = ApplicationConstant.getConnection().prepareStatement(sql);
+            ps.setLong(1, prescription.getId());
+            ps.setLong(2, prescription.getDrugs().get(i).getId());
+            ps.setLong(3, prescription.getId());
+            ps.setString(4, prescription.getDate());
+        }
     }
 
-    @Override
-    public Patient Read(Patient patient) {
-        return null;
-    }
 
-    @Override
-    public void Update(Patient patient) {
-        String sql ="update prescription set drug_id = ?,  ";
-        PreparedStatement ps = ApplicationConstant.getConnection().prepareStatement(sql);
-        ps.setLong(1,patient.getId());
-        ps.executeUpdate();
-    }
 
-    @Override
-    public void Delete(Patient patient) throws SQLException {
-        String sql ="delete from prescription where id = ?";
-        PreparedStatement ps = ApplicationConstant.getConnection().prepareStatement(sql);
-        ps.setLong(1,patient.getId());
-        ps.executeUpdate();
-    }
 
     @Override
     public void creatTable() throws SQLException {
@@ -56,6 +46,8 @@ public class PrescriptionRepositoryImpl implements PrescriptionRepository, BaseR
         PreparedStatement ps = ApplicationConstant.getConnection().prepareStatement(query);
         ps.executeUpdate();
     }
+
+
 
     public List<Prescription> findByUserId(long id, String date) throws SQLException {
         String sql = "select drug_id from prescription where id = ? and date = to_date(?,'yyy,mm,dd')";
@@ -106,4 +98,26 @@ public class PrescriptionRepositoryImpl implements PrescriptionRepository, BaseR
 
     }
 
+
+    public Prescription Read(Prescription prescription) throws SQLException {
+        List<Drug> drugs = new ArrayList<>();
+        String sql = "select * from prescription where person_id = ? and date = to_date(?,'yyyy/mm/dd')";
+        PreparedStatement ps = ApplicationConstant.getConnection().prepareStatement(sql);
+        ps.setLong(1,prescription.getId());
+        ps.setString(2, prescription.getDate());
+        ResultSet rs = ps.executeQuery();
+        while (rs.next()){
+            drugs.add(ApplicationConstant.getDrugRepositoryIml().findById(rs.getLong("drug_id")));
+        }
+        prescription.setDrugs(drugs);
+        return prescription;
+    }
+
+
+    public void Delete(Prescription prescription) throws SQLException {
+        String sql = "delete from prescription where id = ?";
+        PreparedStatement ps = ApplicationConstant.getConnection().prepareStatement(sql);
+        ps.setLong(1, prescription.getId());
+        ps.executeUpdate();
+    }
 }
