@@ -1,13 +1,9 @@
 package repository.impl;
-
 import entity.Drug;
-import entity.Patient;
 import entity.Person;
 import entity.Prescription;
-import repository.BaseRepository;
 import repository.PrescriptionRepository;
 import service.ApplicationConstant;
-
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
@@ -30,8 +26,6 @@ public class PrescriptionRepositoryImpl implements PrescriptionRepository {
     }
 
 
-
-
     @Override
     public void creatTable() throws SQLException {
         String query = """
@@ -48,12 +42,27 @@ public class PrescriptionRepositoryImpl implements PrescriptionRepository {
     }
 
 
-
     public List<Prescription> findByUserId(long id, String date) throws SQLException {
         String sql = "select drug_id from prescription where id = ? and date = to_date(?,'yyy,mm,dd')";
         PreparedStatement ps = ApplicationConstant.getConnection().prepareStatement(sql);
         ps.setLong(1, id);
         ps.setString(2, date);
+        ResultSet rs = ps.executeQuery();
+        List<Prescription> prescriptions = new ArrayList<>();
+        while (rs.next()) {
+            Prescription prescription = null;
+            prescription.setId(rs.getLong(1));
+            prescription.setDrugs(drugsInPrescription(drugsInPrescriptionById(rs.getLong(2))));
+            prescription.setDate(rs.getString(3));
+            prescription.setConfirmation(rs.getBoolean(4));
+            prescriptions.add(prescription);
+        }
+        return prescriptions;
+    }
+    public List<Prescription> findByUserId(long id) throws SQLException {
+        String sql = "select drug_id from prescription where person_id = ?";
+        PreparedStatement ps = ApplicationConstant.getConnection().prepareStatement(sql);
+        ps.setLong(1, id);
         ResultSet rs = ps.executeQuery();
         List<Prescription> prescriptions = new ArrayList<>();
         while (rs.next()) {
@@ -95,7 +104,6 @@ public class PrescriptionRepositoryImpl implements PrescriptionRepository {
             }
         }
         return drugsList;
-
     }
 
 
@@ -103,10 +111,10 @@ public class PrescriptionRepositoryImpl implements PrescriptionRepository {
         List<Drug> drugs = new ArrayList<>();
         String sql = "select * from prescription where person_id = ? and date = to_date(?,'yyyy/mm/dd')";
         PreparedStatement ps = ApplicationConstant.getConnection().prepareStatement(sql);
-        ps.setLong(1,prescription.getId());
+        ps.setLong(1, prescription.getId());
         ps.setString(2, prescription.getDate());
         ResultSet rs = ps.executeQuery();
-        while (rs.next()){
+        while (rs.next()) {
             drugs.add(ApplicationConstant.getDrugRepositoryIml().findById(rs.getLong("drug_id")));
         }
         prescription.setDrugs(drugs);
@@ -118,6 +126,42 @@ public class PrescriptionRepositoryImpl implements PrescriptionRepository {
         String sql = "delete from prescription where id = ?";
         PreparedStatement ps = ApplicationConstant.getConnection().prepareStatement(sql);
         ps.setLong(1, prescription.getId());
+        ps.executeUpdate();
+    }
+
+    public List<Prescription> foundAllPrescription() throws SQLException {
+        List<Drug> drugs = new ArrayList<>();
+        List<Prescription> prescriptions = new ArrayList<>();
+        String sql = "select * from prescription";
+        PreparedStatement ps = ApplicationConstant.getConnection().prepareStatement(sql);
+        ResultSet rs = ps.executeQuery();
+        while (rs.next()) {
+            Prescription prescription = null;
+            Person person;
+            prescription.setId(rs.getLong(1));
+            drugs.add(ApplicationConstant.getDrugRepositoryIml().findById(rs.getLong(2)));
+            prescription.setDrugs(drugs);
+            person = ApplicationConstant.getPersonRepository().findById(rs.getLong(3));
+            prescription.setPeron(person);
+            prescription.setDate(rs.getString(4));
+            boolean exist = rs.getBoolean(5);
+            prescription.setConfirmation(exist);
+            prescriptions.add(prescription);
+        }
+        return prescriptions;
+    }
+    public void trueSetConfig(Prescription prescription) throws SQLException {
+        String sql = "update prescription set confirmation = true";
+        PreparedStatement ps = ApplicationConstant.getConnection().prepareStatement(sql);
+        ps.executeUpdate();
+
+    }
+
+    public void update(Prescription prescription, long id) throws SQLException {
+        String sql = "update prescription set drug_id = ? where person_id = ?";
+        PreparedStatement ps = ApplicationConstant.getConnection().prepareStatement(sql);
+        ps.setLong(1, prescription.getPeron().getId());
+        ps.setLong(1, id);
         ps.executeUpdate();
     }
 }

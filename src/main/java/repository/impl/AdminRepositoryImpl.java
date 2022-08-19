@@ -28,15 +28,6 @@ public class AdminRepositoryImpl implements AdminRepository, BaseRepository<Admi
         return false;
     }
 
-    @Override
-    public boolean doesExist(Drug drug) {
-        return false;
-    }
-
-    @Override
-    public boolean addDrug(Drug drug) {
-        return false;
-    }
 
     @Override
     public Admin Create(Admin admin) throws SQLException {
@@ -99,5 +90,24 @@ public class AdminRepositoryImpl implements AdminRepository, BaseRepository<Admi
                 """;
         PreparedStatement ps = ApplicationConstant.getConnection().prepareStatement(query);
         ps.executeUpdate();
+    }
+
+    public Admin findByUsername(String username, String password) throws SQLException {
+        Admin admin= null;
+        String sql = "select * from person where username = ? and  password = ? and user_type = 'ADMIN'";
+        PreparedStatement ps = ApplicationConstant.getConnection().prepareStatement(sql);
+        ps.setString(1, username);
+        ps.setString(2, password);
+        ResultSet rs = ps.executeQuery();
+        if (rs.next()){
+            admin = new Admin();
+            admin.setId(rs.getLong(1));
+            admin.setName((rs.getString(2)));
+            admin.setUsername((rs.getString(3)));
+            admin.setPassword((rs.getString(4)));
+            UserType userType = UserType.valueOf(rs.getString(5));
+            admin.setUserType(userType);
+        }
+        return admin;
     }
 }

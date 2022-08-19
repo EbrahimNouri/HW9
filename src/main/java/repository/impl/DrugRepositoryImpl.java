@@ -1,7 +1,6 @@
 package repository.impl;
 
 import entity.Drug;
-import entity.Prescription;
 import repository.BaseRepository;
 import repository.DrugRepository;
 import service.ApplicationConstant;
@@ -9,7 +8,6 @@ import service.ApplicationConstant;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
-import java.sql.Statement;
 
 public class DrugRepositoryImpl implements DrugRepository, BaseRepository<Drug> {
     @Override
@@ -29,7 +27,7 @@ public class DrugRepositoryImpl implements DrugRepository, BaseRepository<Drug> 
         PreparedStatement ps = ApplicationConstant.getConnection().prepareStatement(sql);
         ps.setLong(1, drug.getId());
         ResultSet rs = ps.executeQuery();
-        if(rs.next()){
+        if (rs.next()) {
             drug.setId(rs.getLong(1));
             drug.setName(rs.getString(2));
             drug.setPrice(rs.getDouble(3));
@@ -48,7 +46,7 @@ public class DrugRepositoryImpl implements DrugRepository, BaseRepository<Drug> 
     @Override
     public void Delete(Drug drug) throws SQLException {
         String sql = "delete from drug where id = ?";
-        PreparedStatement ps =ApplicationConstant.getConnection().prepareStatement(sql);
+        PreparedStatement ps = ApplicationConstant.getConnection().prepareStatement(sql);
         ps.setLong(1, drug.getId());
         ps.executeUpdate();
     }
@@ -67,7 +65,7 @@ public class DrugRepositoryImpl implements DrugRepository, BaseRepository<Drug> 
         PreparedStatement ps = ApplicationConstant.getConnection().prepareStatement(sql);
         ps.setLong(1, id);
         ResultSet rs = ps.executeQuery();
-        if (rs.next()){
+        if (rs.next()) {
             drug.setId(rs.getLong(1));
             drug.setName(rs.getString(2));
             drug.setPrice(rs.getDouble(3));
@@ -83,9 +81,9 @@ public class DrugRepositoryImpl implements DrugRepository, BaseRepository<Drug> 
         PreparedStatement ps = ApplicationConstant.getConnection().prepareStatement(sql);
         ps.setLong(1, id);
         ResultSet rs = ps.executeQuery();
-        if (rs.next()){
+        if (rs.next()) {
             return rs.getBoolean("does_exist");
-        }else{
+        } else {
             System.out.println("does not exist");
             return false;
         }
@@ -97,11 +95,18 @@ public class DrugRepositoryImpl implements DrugRepository, BaseRepository<Drug> 
         PreparedStatement ps = ApplicationConstant.getConnection().prepareStatement(sql);
         ps.setLong(1, id);
         ResultSet rs = ps.executeQuery();
-        if (rs.next()){
+        if (rs.next()) {
             return rs.getFloat(1);
         }
         System.out.println("dont exist returned 0");
         return 0;
     }
 
+    public void setPriceForDrug(Drug drug, double price) throws SQLException {
+        String sql = "update drug set price = ? where id = ?";
+        PreparedStatement ps = ApplicationConstant.getConnection().prepareStatement(sql);
+        ps.setDouble(1, price);
+        ps.setLong(2, drug.getId());
+        ps.executeUpdate();
+    }
 }
